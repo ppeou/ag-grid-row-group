@@ -9,7 +9,11 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.2",
-    "web-vitals": "^1.1.0"
+    "web-vitals": "^1.1.0",
+    "@ag-grid-community/core": "23.2.1",
+    "@ag-grid-community/react": "23.2.1",
+    "@ag-grid-enterprise/all-modules": "23.2.1",
+    "ag-grid-community": "23.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
