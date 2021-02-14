@@ -1,11 +1,12 @@
 .ag-header-cell-label .ag-header-cell-text {
   white-space: normal !important;
 }
+/*
 .singleTranche .ag-group-contracted,
 .singleTranche .ag-group-expanded
 {
   display: none !important;
-}
+}*/
 
 .myDiv {
   position: absolute;
