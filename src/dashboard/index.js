@@ -8,135 +8,57 @@ import 'ag-grid-community/dist/styles/ag-theme-dark.css';
 import '../css/grid.css';
 import columns, {getSimpleCellRenderer} from './columns';
 
-
+const trancheStatusSortOrder = {
+  Green: 2,
+  Red: 1,
+  Purple: 3
+};
 
 
 let {data, getRandom} = createRandomUpdate();
-/*data = [{
-  "rid": 1,
-  "trancheStatus": "Purple",
-  "dealId": "PA",
-  "deal": "Pennsylvania",
-  "trancheName": "Pittsburgh-1",
-  "zip": "19101",
-  "g1Id": "Purple",
-  "g2Id": "Purple-PA",
-  "g3Id": "Purple-PA-Pittsburgh-1",
-  "people": 208
-}, {
-  "rid": 2,
-  "trancheStatus": "Green",
-  "dealId": "TX",
-  "deal": "Texas",
-  "trancheName": "Houston-2",
-  "zip": "77001",
-  "g1Id": "Green",
-  "g2Id": "Green-TX",
-  "g3Id": "Green-TX-Houston-2",
-  "people": 247
-}, {
-  "rid": 3,
-  "trancheStatus": "Red",
-  "dealId": "NY",
-  "deal": "New York",
-  "trancheName": "NYC-3",
-  "zip": "10001",
-  "g1Id": "Red",
-  "g2Id": "Red-NY",
-  "g3Id": "Red-NY-NYC-3",
-  "people": 143
-}, {
-  "rid": 4,
-  "trancheStatus": "Green",
-  "dealId": "TX",
-  "deal": "Texas",
-  "trancheName": "Houston-4",
-  "zip": "77002",
-  "g1Id": "Green",
-  "g2Id": "Green-TX",
-  "g3Id": "Green-TX-Houston-4",
-  "people": 173
-}, {
-  "rid": 5,
-  "trancheStatus": "Purple",
-  "dealId": "NY",
-  "deal": "New York",
-  "trancheName": "Utica-5",
-  "zip": "10002",
-  //"g1Id": "Purple",
-  //g2Id: null,
-  //g3Id: null,
-  "g2Id": "Purple-NY",
-  //"g3Id": "Purple-NY-Utica-5",
-  "people": 218
-}, {
-  "rid": 6,
-  "trancheStatus": "Purple",
-  "dealId": "PA",
-  "deal": "Pennsylvania",
-  "trancheName": "Phila-6",
-  "zip": "19102",
-  "g1Id": "Purple",
-  "g2Id": "Purple-PA",
-  "g3Id": "Purple-PA-Phila-6",
-  "people": 258
-}, {
-  "rid": 7,
-  "trancheStatus": "Red",
-  "dealId": "NY",
-  "deal": "New York",
-  "trancheName": "NYC-7",
-  "zip": "10003",
-  "g1Id": "Red",
-  "g2Id": "Red-NY",
-  "g3Id": "Red-NY-NYC-7",
-  "people": 279
-}, {
-  "rid": 8,
-  "trancheStatus": "Purple",
-  "dealId": "TX",
-  "deal": "Texas",
-  "trancheName": "Austin-8",
-  "zip": "77003",
-  "g1Id": "Purple",
-  //"g2Id": "Purple-TX",
-  //"g3Id": "Purple-TX-Austin-8",
-  "people": 222
-}, {
-  "rid": 9,
-  "trancheStatus": "Red",
-  "dealId": "PA",
-  "deal": "Pennsylvania",
-  "trancheName": "Phila-9",
-  "zip": "19103",
-  "g1Id": "Red",
-  "g2Id": "Red-PA",
-  "g3Id": "Red-PA-Phila-9",
-  "people": 195
-}, {
-  "rid": 10,
-  "trancheStatus": "Red",
-  "dealId": "NY",
-  "deal": "New York",
-  "trancheName": "Albany-10",
-  "zip": "10004",
-  "g1Id": "Red",
-  "g2Id": "Red-NY",
-  "g3Id": "Red-NY-Albany-10",
-  "people": 263
-}];*/
-/*data = [
-  {rid: 1, trancheStatus: 'Red', dealId: 'TX', deal: 'Texas', trancheName: 'Austin', zip: '1', people: 1},
-  {rid: 2, trancheStatus: 'Red', dealId: 'TX', deal: 'Texas', trancheName: 'Austin', zip: '2', people: 2},
-  {rid: 3, trancheStatus: 'Purple', dealId: 'TX', deal: 'Texas', trancheName: 'Houston', zip: '77001', people: 3},
-  {rid: 4, trancheStatus: 'Blue', dealId: 'TX', deal: 'Texas', trancheName: 'Houston', zip: '77002', people: 4},
-  {rid: 5, trancheStatus: 'Red', dealId: 'PA', deal: 'Pennsylvania', trancheName: 'Phila', zip: '19120', people: 5},
-  {rid: 6, trancheStatus: 'Blue', dealId: 'PA', deal: 'Pennsylvania', trancheName: 'Phila', zip: '19121', people: 6},
-  {rid: 7, trancheStatus: 'Red', dealId: 'NY', deal: 'New York', trancheName: 'NYC', zip: '19122', people: 7},
-  {rid: 8, trancheStatus: 'Blue', dealId: 'NY', deal: 'New York', trancheName: 'NYC', zip: '19123', people: 8},
-  {rid: 9, trancheStatus: 'Purple', dealId: 'NY', deal: 'New York', trancheName: 'NYC', zip: '19124', people: 9},
+data = [{"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-1","zip":"77001","people":117},{"rid":2,"trancheStatus":"Red","dealId":"NY","deal":"New York","trancheName":"Utica-2","zip":"10001","people":287},{"rid":3,"trancheStatus":"Purple","dealId":"PA","deal":"Pennsylvania","trancheName":"Pittsburgh-3","zip":"19101","people":230},{"rid":4,"trancheStatus":"Green","dealId":"NY","deal":"New York","trancheName":"NYC-4","zip":"10002","people":294},{"rid":5,"trancheStatus":"Green","dealId":"PA","deal":"Pennsylvania","trancheName":"Harrisburg-5","zip":"19102","people":130},{"rid":6,"trancheStatus":"Red","dealId":"NY","deal":"New York","trancheName":"Utica-6","zip":"10003","people":225},{"rid":7,"trancheStatus":"Green","dealId":"NY","deal":"New York","trancheName":"Utica-7","zip":"10004","people":201},
+  {"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-8","zip":"77002","people":230},
+  {"rid":9,"trancheStatus":"Red","dealId":"PA","deal":"Pennsylvania","trancheName":"Pittsburgh-9","zip":"19103","people":234},{"rid":10,"trancheStatus":"Green","dealId":"TX","deal":"Texas","trancheName":"Houston-10","zip":"77003","people":165}];
 
-];*/
+
+const changes = [
+  {update: [{"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-1","zip":"77001","people":2}]},
+  {update: [{"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-8","zip":"77002","people":3}]},
+
+  {update: [{"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-10","zip":"77001","people":2}]},
+  {update: [{"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-80","zip":"77002","people":3}]},
+
+  {update: [
+    {"rid":1,"trancheStatus":"Purple","dealId":"TX2","deal":"New Texas","trancheName":"Austin-1","zip":"77001-2","people":117},
+    {"rid":8,"trancheStatus":"Purple","dealId":"TX2","deal":"New Texas","trancheName":"Austin-8","zip":"77002-2","people":230}
+  ]},
+
+  {update: [{"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-1","zip":"77001-A","people":117}]},
+  {update: [{"rid":1,"trancheStatus":"Yello","dealId":"TX","deal":"Texas","trancheName":"Austin-1","zip":"was Purple","people":117}]},
+  {remove: [{"rid":6}]},
+];
+
+const trancheStatusGroupSort = (a, b) => {
+  console.log('trancheStatus: ', a, b);
+  const a1 = trancheStatusSortOrder[a.key];
+  const b1 = trancheStatusSortOrder[b.key];
+  if (a1 < b1) {
+    return -1;
+  } else if (a1 > b1) {
+    return 1;
+  } else {
+    return 0;
+  }
+};
+
+const dealIdGroupSort = (a, b) => {
+  return 0;
+};
+
+const groupSort = {
+  dealId: dealIdGroupSort,
+  trancheStatus: trancheStatusGroupSort,
+};
 
 const Dashboard = () => {
 
@@ -201,14 +123,40 @@ const Dashboard = () => {
   };
 
   const doUpdate = () => {
-    const {delta} = getRandom();
+    const delta = changes.shift();
+    gridRef.current.api.applyTransactionAsync(delta);
+    /*const {delta} = getRandom();
 
-    gridRef.current.api.applyTransaction/*Async*/({ update: delta });
-    console.log(delta);
+    const addItems = [{rid:101, trancheStatus:'Yello',dealId:'CA',deal:'California',trancheName:'LA+10',zip:'90001',people:10}];
+
+    gridRef.current.api.applyTransaction({ update: delta });
+    gridRef.current.api.applyTransaction({ add: addItems });
+    console.log(delta);*/
   };
   const getRowNodeId = ({rid}) => rid;
 
   const components = { simpleCellRenderer: getSimpleCellRenderer() };
+
+  const defaultSort = (a, b) => {
+    if (a.key < b.key) {
+      return -1;
+    } else if (a.key > b.key) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
+
+  const defaultGroupSortComparator = (a, b) => {
+    const {field} = a;
+    if(groupSort[field]) {
+      return groupSort[field](a,b);
+    }
+
+   return defaultSort(a,b);
+  };
+
+
 
 
   return (<div>
@@ -229,7 +177,9 @@ const Dashboard = () => {
 
         groupDefaultExpanded={1}
         groupMultiAutoColumn={true}
-        groupRemoveSingleChildren={true}
+        groupRemoveSingleChildren={false}
+        defaultGroupSortComparator={defaultGroupSortComparator}
+        asyncTransactionWaitMillis={2000}
 
         components={components}
         arowClassRules={rowClassRules}

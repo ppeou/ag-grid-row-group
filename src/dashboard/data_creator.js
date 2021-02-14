@@ -42,9 +42,6 @@ const createData = () => {
 
     data.push({
       rid: (++iid),trancheStatus, dealId, deal, trancheName, zip: `${zip}`,
-      g1Id: trancheStatus,
-      g2Id: `${trancheStatus}-${dealId}`,
-      g3Id: `${trancheStatus}-${dealId}-${trancheName}`,
       people: random(100,300)
     });
   });

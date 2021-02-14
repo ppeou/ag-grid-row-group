@@ -2,16 +2,15 @@ import React from "react";
 
 
 const getChildrenCount = (node, hideOnSingleChild) => {
-  const count = node.childrenAfterGroup.length;
+  const count = node.childrenAfterFilter.length;
   if (hideOnSingleChild && count <= 1) {
     return '';
   }
-  return `[${node.childrenAfterGroup.length}]`;
+  return `[${count}]`;
 };
 
 const valueGetterForStateGroup = (arg) => {
   const {data: {dealId: dealId, deal}} = arg;
-  console.log('vg', arg);
   return `${dealId}-${deal}`;
 };
 
@@ -20,7 +19,6 @@ const valueFormatterForZoneGroup = ({value, node}) => {
 };
 
 const valueFormatterForStateGroup = (arg) => {
-  console.log(arg);
   const {value, node} = arg;
   const name = value.split('-').pop();
   const suffix = getChildrenCount(node, true);
@@ -68,11 +66,13 @@ const columns = [
     headerName: 'Deal', rowGroupIndex: 1, hide: true,
     valueFormatter: valueFormatterForStateGroup,
     valueGetter: valueGetterForStateGroup,
+    //enableCellChangeFlash: true,
     //keyCreator: zoneStateKeyCreator,
     //cellRendererFramework: myRender,
   },
   {
     id: 3, headerName: 'Tranche', field: 'trancheName',
+    cellRenderer: 'agAnimateShowChangeCellRenderer',
     //valueFormatter: valueFormatterForSingleChild
   },
   {
@@ -81,6 +81,11 @@ const columns = [
   },
   {
     id: 5, headerName: 'RID', field: 'rid',
+    //valueFormatter: valueFormatterForSingleChild
+  },
+  {
+    id: 6, headerName: 'People', field: 'people',
+    cellRenderer: 'agAnimateShowChangeCellRenderer',
     //valueFormatter: valueFormatterForSingleChild
   },
 ];
