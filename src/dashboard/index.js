@@ -9,7 +9,9 @@ import '../css/grid.css';
 
 const getChildrenCount = (node, hideOnSingleChild) => {
   const count = node.childrenAfterGroup.length;
-  if(hideOnSingleChild && count <= 1) {return '';}
+  if (hideOnSingleChild && count <= 1) {
+    return '';
+  }
   return `[${node.childrenAfterGroup.length}]`;
 };
 
@@ -27,67 +29,47 @@ const valueFormatterForStateGroup = ({value, node}) => {
   return `${name}${suffix ? ' ' + suffix : ''}`;
 };
 
-
-const valueFormatterForCityGroup = ({value, node}) => {
-  const suffix = getChildrenCount(node, true);
-  return `${value}${suffix ? ' ' + suffix : ''}`;
-};
-
 const valueFormatterForSingleChild = (arg) => {
   const {colDef, node, value} = arg;
   const {childrenAfterGroup, level} = node;
-  if(level > 1) {
+  if (level > 1) {
     return value;
   }
 
   const {field} = colDef;
-  if(childrenAfterGroup.length === 1) {
+  if (childrenAfterGroup.length === 1) {
     return childrenAfterGroup[0].data[field];
   }
   return undefined;
 };
 
-const myInnerRenderer = (arg) => {
-  console.log('myInnerRenderer', arg);
-  return <div>Hi</div>;
+const myRender = ({value, node}) => {
+  const suffix = getChildrenCount(node);
+  const text = [value, suffix].join(' ');
+  return <div className="myDiv">{text}</div>
 };
+
 
 const columns = [
   {
     field: 'zoneId', headerName: 'Status', rowGroupIndex: 0, hide: true,
     valueFormatter: valueFormatterForZoneGroup,
+    cellRendererFramework: myRender,
   },
   {
     field: 'stateId', headerName: 'Deal', rowGroupIndex: 1, hide: true,
     valueFormatter: valueFormatterForStateGroup,
-    valueGetter: valueGetterForStateGroup
+    valueGetter: valueGetterForStateGroup,
+    cellRendererFramework: myRender,
   },
 
-  /*{field: 'zoneId', rowGroup: true, hide: true },
-  {headerName: 'Status', showRowGroup: 'zoneId', cellRenderer: 'agGroupCellRenderer'},
 
-  {field: 'stateId', rowGroup: true, hide: true },
-  {headerName: 'Deal', showRowGroup: 'stateId', cellRenderer: 'agGroupCellRenderer'
-    ,
-    cellRendererParams: {
-      suppressCount: true, // turn off the row count
-      suppressDoubleClickExpand: true, // turn off double click for expand
-      //checkbox: true, // enable checkbox selection
-      innerRenderer: myInnerRenderer, // provide an inner renderer
-      //footerValueGetter: myFooterValueGetter // provide a footer value getter
-    }
-  },*/
-
-
-  /*{
-    field: 'city', rowGroupIndex: 2, hide: true,
-    valueFormatter: valueFormatterForCityGroup,
-  },*/
-
-  {id: 3, header: 'Tranche', field: 'city',
+  {
+    id: 3, header: 'Tranche', field: 'city',
     valueFormatter: valueFormatterForSingleChild
   },
-  {id: 4, header: 'Zip', field: 'zip',
+  {
+    id: 4, header: 'Zip', field: 'zip',
     valueFormatter: valueFormatterForSingleChild
   },
 ];
@@ -112,8 +94,11 @@ const Dashboard = () => {
 
   const defaultColDef = {};
   const autoGroupColumnDef = {
-    //headerName: 'Zone',
-    cellRendererParams: {suppressCount: true}
+    cellRendererParams: {
+      suppressCount: true,
+      suppressDoubleClickExpand: true,
+      suppressEnterExpand: true
+    }
 
   };
 
@@ -126,11 +111,23 @@ const Dashboard = () => {
   };
 
   const expandZone = () => {
-    gridRef.current.api.forEachNode(function(node) {
+    gridRef.current.api.forEachNode(function (node) {
       if (node.group && node.level == 0) {
         node.setExpanded(true);
       }
     });
+  };
+
+  const rowClassRules = {
+    singleTranche: (param) => {
+      const {node: {level, childrenAfterGroup}} = param;
+      if (level === 1) {
+        if (childrenAfterGroup.length <= 1) {
+          return true;
+        }
+      }
+      return false;
+    }
   };
 
   const onGridReady = (grid) => {
@@ -138,9 +135,24 @@ const Dashboard = () => {
     window.agrid = grid;
   };
 
+  const cellDoubleClicked = (arg) => {
+    console.log(arg);
+    const {node}= arg;
+    const {node: {level, childrenAfterGroup}} = arg;
+    if(level === 1 && childrenAfterGroup.length === 1) {
+      arg.event.stopPropagation();
+      arg.event.preventDefault();
+      return false;
+    } else {
+      //if we want to use custom renderer, we can expand on double click
+      node.setExpanded(!node.expanded);
+    }
+  };
+
   return (<div>
     <div className="toolbar">
-      <button onClick={expandAll}>Expand All</button> |
+      <button onClick={expandAll}>Expand All</button>
+      |
       <button onClick={collapseAll}>Collapse All</button> |
       <button onClick={expandZone}>Expand Zone</button>
     </div>
@@ -154,10 +166,9 @@ const Dashboard = () => {
         multiSortKey="ctrl"
         groupDefaultExpanded={1}
         groupMultiAutoColumn={true}
-        agroupRemoveSingleChildren={true}
-        agroupRemoveLowestSingleChildren={true}
-        agroupSuppressAutoColumn ={true}
-      rowData={data}
+        rowClassRules={rowClassRules}
+        onCellDoubleClicked={cellDoubleClicked}
+        rowData={data}
       />
     </div>
   </div>);
