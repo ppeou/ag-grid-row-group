@@ -1,78 +1,14 @@
 import React from "react";
 
 
-const getChildrenCount = (node, hideOnSingleChild) => {
-  const count = node.childrenAfterFilter.length;
-  if (hideOnSingleChild && count <= 1) {
-    return '';
-  }
-  return `[${count}]`;
-};
-
-const valueGetterForStateGroup = (arg) => {
-  const {data: {dealId: dealId, deal}} = arg;
-  return `${dealId}-${deal}`;
-};
-
-const valueFormatterForZoneGroup = ({value, node}) => {
-  return `${value} ${getChildrenCount(node)}`;
-};
-
-const valueFormatterForStateGroup = (arg) => {
-  const {value, node} = arg;
-  const name = value.split('-').pop();
-  const suffix = getChildrenCount(node, true);
-  return `${name}${suffix ? ' ' + suffix : ''}`;
-};
-
-const valueFormatterForSingleChild = (arg) => {
-
-  const {colDef, node, value} = arg;
-  const {childrenAfterGroup, level} = node;
-  if (level > 1) {
-    return value;
-  }
-
-  const {field} = colDef;
-  if (childrenAfterGroup && childrenAfterGroup.length === 1 && childrenAfterGroup[0].data) {
-    console.log(arg);
-    return childrenAfterGroup[0].data[field];
-  }
-  return undefined;
-};
-
-const myRender = ({value, node}) => {
-  const suffix = getChildrenCount(node);
-  const text = [value, suffix].join(' ');
-  return <div className="myDiv">{text}</div>
-};
-
-//const zoneKeyCreator = ({value: {trancheStatus}}) => trancheStatus;
-const zoneStateKeyCreator = ({value:{trancheStatus, dealId}}) => `${trancheStatus}-${dealId}`;
 
 const columns = [
   {
-    id: 1,
-    //field: 'g1Id',
-    field: 'trancheStatus',
-    headerName: 'Status', rowGroupIndex: 0, hide: true,
-    valueFormatter: valueFormatterForZoneGroup
-    //cellRendererFramework: myRender,
-  },
-  {
-    id: 2,
-    //field: 'g2Id',
-    field: 'dealId',
-    headerName: 'Deal', rowGroupIndex: 1, hide: true,
-    valueFormatter: valueFormatterForStateGroup,
-    valueGetter: valueGetterForStateGroup,
-    //enableCellChangeFlash: true,
-    //keyCreator: zoneStateKeyCreator,
-    //cellRendererFramework: myRender,
-  },
-  {
-    id: 3, headerName: 'Tranche', field: 'trancheName',
-    cellRenderer: 'agAnimateShowChangeCellRenderer',
+    id: 1, hide: 'true', field: 'trancheStatus',
+    comparator: (a,b) => {
+      console.log(a,b);
+     return 0;
+    }
     //valueFormatter: valueFormatterForSingleChild
   },
   {
