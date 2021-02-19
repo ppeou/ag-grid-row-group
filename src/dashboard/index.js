@@ -9,42 +9,42 @@ import '../css/grid.css';
 import columns, {getSimpleCellRenderer} from './columns';
 
 const trancheStatusSortOrder = {
-  Green: 2,
-  Red: 1,
-  Purple: 3
+  AAA: 1,
+  BBB: 2,
+  CCC: 3
 };
 
 
 let {data, getRandom} = createRandomUpdate();
 data = [
-  {"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin","zip":"77001","people":117, sort: 1},
-  {"rid":2,"trancheStatus":"Red","dealId":"NY","deal":"New York","trancheName":"Utica-2","zip":"10001","people":287, sort: 2},
-  {"rid":3,"trancheStatus":"Purple","dealId":"PA","deal":"Pennsylvania","trancheName":"Pittsburgh-3","zip":"19101","people":230, sort: 3},
-  {"rid":4,"trancheStatus":"Green","dealId":"NY","deal":"New York","trancheName":"NYC-4","zip":"10002","people":294, sort: 4},
-  {"rid":5,"trancheStatus":"Green","dealId":"PA","deal":"Pennsylvania","trancheName":"Harrisburg-5","zip":"19102","people":130, sort: 5},
-  {"rid":6,"trancheStatus":"Red","dealId":"NY","deal":"New York","trancheName":"Utica-6","zip":"10003","people":225, sort: 6},
-  {"rid":7,"trancheStatus":"Green","dealId":"NY","deal":"New York","trancheName":"Utica-7","zip":"10004","people":201, sort: 7},
-  {"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin","zip":"77002","people":230, sort: 8},
-  {"rid":9,"trancheStatus":"Red","dealId":"PA","deal":"Pennsylvania","trancheName":"Pittsburgh-9","zip":"19103","people":234, sort: 9},
-  {"rid":10,"trancheStatus":"Green","dealId":"TX","deal":"Texas","trancheName":"Houston-10","zip":"77003","people":165, sort: 10}
+  {"rid":1,"trancheStatus":"CCC","dealId":"TX","dealName":"Texas","trancheName":"Austin","zip":"77001","people":117, sort: 1},
+  {"rid":2,"trancheStatus":"AAA","dealId":"NY","dealName":"New York","trancheName":"Utica-2","zip":"10001","people":287, sort: 2},
+  {"rid":3,"trancheStatus":"CCC","dealId":"PA","dealName":"Pennsylvania","trancheName":"Pittsburgh-3","zip":"19101","people":230, sort: 3},
+  {"rid":4,"trancheStatus":"BBB","dealId":"NY","dealName":"New York","trancheName":"NYC-4","zip":"10002","people":294, sort: 4},
+  {"rid":5,"trancheStatus":"BBB","dealId":"PA","dealName":"Pennsylvania","trancheName":"Harrisburg-5","zip":"19102","people":130, sort: 5},
+  {"rid":6,"trancheStatus":"AAA","dealId":"NY","dealName":"New York","trancheName":"Utica-6","zip":"10003","people":225, sort: 6},
+  {"rid":7,"trancheStatus":"BBB","dealId":"NY","dealName":"New York","trancheName":"Utica-7","zip":"10004","people":201, sort: 7},
+  {"rid":8,"trancheStatus":"CCC","dealId":"TX","dealName":"Texas","trancheName":"Austin","zip":"77002","people":230, sort: 8},
+  {"rid":9,"trancheStatus":"AAA","dealId":"PA","dealName":"Pennsylvania","trancheName":"Pittsburgh-9","zip":"19103","people":234, sort: 9},
+  {"rid":10,"trancheStatus":"BBB","dealId":"TX","dealName":"Texas","trancheName":"Houston-10","zip":"77003","people":165, sort: 10}
 ];
 
 
 const changes = [
   {update: [
-      {"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas New","trancheName":"Austin-1","zip":"77001-1","people":117, sort:1},
-      {"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas New","trancheName":"Austin-8","zip":"77002-8","people":230, sort:8}
+      {"rid":1,"trancheStatus":"CCC","dealId":"TX","dealName":"Texas New","trancheName":"Austin-1","zip":"77001-1","people":117, sort:1},
+      {"rid":8,"trancheStatus":"CCC","dealId":"TX","dealName":"Texas New","trancheName":"Austin-8","zip":"77002-8","people":230, sort:8},
     ]},
 
-  {update: [{"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-1","zip":"77001","people":2, sort:1}]},
+  {update: [{"rid":1,"trancheStatus":"CCC","dealId":"TX","dealName":"Texas","trancheName":"Austin-1","zip":"77001","people":2, sort:1}]},
 
-  {update: [{"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-8","zip":"77002","people":3, sort:8}]},
-  {update: [{"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-10","zip":"77001","people":20, sort:1}]},
+  {update: [{"rid":8,"trancheStatus":"CCC","dealId":"TX","dealName":"Texas","trancheName":"Austin-8","zip":"77002","people":3, sort:8}]},
+  {update: [{"rid":1,"trancheStatus":"CCC","dealId":"TX","dealName":"Texas","trancheName":"Austin-10","zip":"77001","people":20, sort:1}]},
 
-  {update: [{"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-80","zip":"77002","people":3}]},
+  {update: [{"rid":8,"trancheStatus":"CCC","dealId":"TX","dealName":"Texas","trancheName":"Austin-80","zip":"77002","people":3}]},
 
-  {update: [{"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-1","zip":"77001-A","people":117}]},
-  {update: [{"rid":1,"trancheStatus":"Yello","dealId":"TX","deal":"Texas","trancheName":"Austin-1","zip":"was Purple","people":117}]},
+  {update: [{"rid":1,"trancheStatus":"CCC","dealId":"TX","dealName":"Texas","trancheName":"Austin-1","zip":"77001-A","people":117}]},
+  {update: [{"rid":1,"trancheStatus":"Yello","dealId":"TX","dealName":"Texas","trancheName":"Austin-1","zip":"was CCC","people":117}]},
   {remove: [{"rid":6}]},
 ];
 
@@ -82,11 +82,23 @@ const Dashboard = () => {
   window.data = data;
 
   const defaultColDef = {
+    filter: true,
+    sortable: true,
+    resizable: true,
     width: 170
   };
+  let iid = 0;
   const autoGroupColumnDef = {
+    filter: true,
+
+    filterValueGetter: (args) => {
+      const {colDef: {showRowGroup}, node: {level}, data} = args;
+      const fieldMap = {trancheStatus: 'trancheStatus', dealId: 'dealName'};
+      return data[fieldMap[showRowGroup]];
+    },
+    //field: 'trancheStatus',
     cellRendererParams: {
-      suppressCount: true,
+      //suppressCount: true,
       suppressDoubleClickExpand: true,
       suppressEnterExpand: true
     }
@@ -142,7 +154,7 @@ const Dashboard = () => {
 
   const doUpdate = () => {
     const delta = changes.shift();
-    gridRef.current.api.applyTransactionAsync(delta);
+    gridRef.current.api.applyTransactionAsync(delta);  //delat: {update: [], remove: [], add: [{}]}
     /*const {delta} = getRandom();
 
     const addItems = [{rid:101, trancheStatus:'Yello',dealId:'CA',deal:'California',trancheName:'LA+10',zip:'90001',people:10}];
@@ -195,7 +207,7 @@ const Dashboard = () => {
 
         groupDefaultExpanded={1}
         groupMultiAutoColumn={true}
-        groupRemoveSingleChildren={false}
+        groupRemoveSingleChildren={0}
         defaultGroupSortComparator={defaultGroupSortComparator}
         asyncTransactionWaitMillis={2000}
 

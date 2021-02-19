@@ -10,8 +10,8 @@ const getChildrenCount = (node, hideOnSingleChild) => {
 };
 
 const valueGetterForStateGroup = (arg) => {
-  const {data: {dealId: dealId, deal}} = arg;
-  return `${dealId}-${deal}`;
+  const {data: {dealId: dealId, dealName}} = arg;
+  return `${dealId}-${dealName}`;
 };
 
 const valueFormatterForZoneGroup = ({value, node}) => {
@@ -19,6 +19,7 @@ const valueFormatterForZoneGroup = ({value, node}) => {
 };
 
 const valueFormatterForStateGroup = (arg) => {
+  console.log(arg);
   const {value, node} = arg;
   const name = value.split('-').pop();
   const suffix = getChildrenCount(node, true);
@@ -55,7 +56,10 @@ const columns = [
     id: 1,
     //field: 'g1Id',
     field: 'trancheStatus',
-    headerName: 'Status', rowGroupIndex: 0, hide: true,
+    headerName: 'Status',
+    rowGroupIndex: 0,
+    //rowGroup: true,
+    hide: true,
     valueFormatter: valueFormatterForZoneGroup
     //cellRendererFramework: myRender,
   },
@@ -64,7 +68,10 @@ const columns = [
     //field: 'g2Id',
     width: 200,
     field: 'dealId',
-    headerName: 'Deal', rowGroupIndex: 1, hide: true,
+    headerName: 'dealName',
+    rowGroupIndex: 1,
+    //rowGroup: true,
+    hide: true,
     valueFormatter: valueFormatterForStateGroup,
     valueGetter: valueGetterForStateGroup,
     //enableCellChangeFlash: true,
