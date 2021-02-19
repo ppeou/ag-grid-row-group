@@ -16,43 +16,59 @@ const trancheStatusSortOrder = {
 
 
 let {data, getRandom} = createRandomUpdate();
-data = [{"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-1","zip":"77001","people":117},{"rid":2,"trancheStatus":"Red","dealId":"NY","deal":"New York","trancheName":"Utica-2","zip":"10001","people":287},{"rid":3,"trancheStatus":"Purple","dealId":"PA","deal":"Pennsylvania","trancheName":"Pittsburgh-3","zip":"19101","people":230},{"rid":4,"trancheStatus":"Green","dealId":"NY","deal":"New York","trancheName":"NYC-4","zip":"10002","people":294},{"rid":5,"trancheStatus":"Green","dealId":"PA","deal":"Pennsylvania","trancheName":"Harrisburg-5","zip":"19102","people":130},{"rid":6,"trancheStatus":"Red","dealId":"NY","deal":"New York","trancheName":"Utica-6","zip":"10003","people":225},{"rid":7,"trancheStatus":"Green","dealId":"NY","deal":"New York","trancheName":"Utica-7","zip":"10004","people":201},
-  {"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-8","zip":"77002","people":230},
-  {"rid":9,"trancheStatus":"Red","dealId":"PA","deal":"Pennsylvania","trancheName":"Pittsburgh-9","zip":"19103","people":234},{"rid":10,"trancheStatus":"Green","dealId":"TX","deal":"Texas","trancheName":"Houston-10","zip":"77003","people":165}];
+data = [
+  {"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin","zip":"77001","people":117, sort: 1},
+  {"rid":2,"trancheStatus":"Red","dealId":"NY","deal":"New York","trancheName":"Utica-2","zip":"10001","people":287, sort: 2},
+  {"rid":3,"trancheStatus":"Purple","dealId":"PA","deal":"Pennsylvania","trancheName":"Pittsburgh-3","zip":"19101","people":230, sort: 3},
+  {"rid":4,"trancheStatus":"Green","dealId":"NY","deal":"New York","trancheName":"NYC-4","zip":"10002","people":294, sort: 4},
+  {"rid":5,"trancheStatus":"Green","dealId":"PA","deal":"Pennsylvania","trancheName":"Harrisburg-5","zip":"19102","people":130, sort: 5},
+  {"rid":6,"trancheStatus":"Red","dealId":"NY","deal":"New York","trancheName":"Utica-6","zip":"10003","people":225, sort: 6},
+  {"rid":7,"trancheStatus":"Green","dealId":"NY","deal":"New York","trancheName":"Utica-7","zip":"10004","people":201, sort: 7},
+  {"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin","zip":"77002","people":230, sort: 8},
+  {"rid":9,"trancheStatus":"Red","dealId":"PA","deal":"Pennsylvania","trancheName":"Pittsburgh-9","zip":"19103","people":234, sort: 9},
+  {"rid":10,"trancheStatus":"Green","dealId":"TX","deal":"Texas","trancheName":"Houston-10","zip":"77003","people":165, sort: 10}
+];
 
 
 const changes = [
-  {update: [{"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-1","zip":"77001","people":2}]},
-  {update: [{"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-8","zip":"77002","people":3}]},
-
-  {update: [{"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-10","zip":"77001","people":2}]},
-  {update: [{"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-80","zip":"77002","people":3}]},
-
   {update: [
-    {"rid":1,"trancheStatus":"Purple","dealId":"TX2","deal":"New Texas","trancheName":"Austin-1","zip":"77001-2","people":117},
-    {"rid":8,"trancheStatus":"Purple","dealId":"TX2","deal":"New Texas","trancheName":"Austin-8","zip":"77002-2","people":230}
-  ]},
+      {"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas New","trancheName":"Austin-1","zip":"77001-1","people":117, sort:1},
+      {"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas New","trancheName":"Austin-8","zip":"77002-8","people":230, sort:8}
+    ]},
+
+  {update: [{"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-1","zip":"77001","people":2, sort:1}]},
+
+  {update: [{"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-8","zip":"77002","people":3, sort:8}]},
+  {update: [{"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-10","zip":"77001","people":20, sort:1}]},
+
+  {update: [{"rid":8,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-80","zip":"77002","people":3}]},
 
   {update: [{"rid":1,"trancheStatus":"Purple","dealId":"TX","deal":"Texas","trancheName":"Austin-1","zip":"77001-A","people":117}]},
   {update: [{"rid":1,"trancheStatus":"Yello","dealId":"TX","deal":"Texas","trancheName":"Austin-1","zip":"was Purple","people":117}]},
   {remove: [{"rid":6}]},
 ];
 
-const trancheStatusGroupSort = (a, b) => {
-  console.log('trancheStatus: ', a, b);
-  const a1 = trancheStatusSortOrder[a.key];
-  const b1 = trancheStatusSortOrder[b.key];
-  if (a1 < b1) {
+const compareNumber = (a, b) => {
+  if (a < b) {
     return -1;
-  } else if (a1 > b1) {
+  } else if (a > b) {
     return 1;
   } else {
     return 0;
   }
 };
 
+const trancheStatusGroupSort = (a, b) => {
+  console.log('trancheStatus: ', a, b);
+  const a1 = trancheStatusSortOrder[a.key];
+  const b1 = trancheStatusSortOrder[b.key];
+  return compareNumber(a1 < b1);
+};
+
 const dealIdGroupSort = (a, b) => {
-  return 0;
+  const a1 = a.allLeafChildren[0].data.sort;
+  const b1 = b.allLeafChildren[0].data.sort;
+  return compareNumber(a1 < b1);
 };
 
 const groupSort = {
@@ -65,7 +81,9 @@ const Dashboard = () => {
   const gridRef = useRef();
   window.data = data;
 
-  const defaultColDef = {};
+  const defaultColDef = {
+    width: 170
+  };
   const autoGroupColumnDef = {
     cellRendererParams: {
       suppressCount: true,

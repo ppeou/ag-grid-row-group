@@ -62,6 +62,7 @@ const columns = [
   {
     id: 2,
     //field: 'g2Id',
+    width: 200,
     field: 'dealId',
     headerName: 'Deal', rowGroupIndex: 1, hide: true,
     valueFormatter: valueFormatterForStateGroup,
