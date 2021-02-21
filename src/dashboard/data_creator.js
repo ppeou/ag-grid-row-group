@@ -45,7 +45,6 @@ const createData = () => {
       people: random(100,300)
     });
   });
-  console.log(data);
   return data;
 };
 

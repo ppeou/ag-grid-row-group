@@ -2,6 +2,7 @@ import React from "react";
 
 
 const getChildrenCount = (node, hideOnSingleChild) => {
+  return '';
   const count = node.childrenAfterFilter.length;
   if (hideOnSingleChild && count <= 1) {
     return '';
@@ -19,7 +20,6 @@ const valueFormatterForZoneGroup = ({value, node}) => {
 };
 
 const valueFormatterForStateGroup = (arg) => {
-  console.log(arg);
   const {value, node} = arg;
   const name = value.split('-').pop();
   const suffix = getChildrenCount(node, true);
@@ -36,7 +36,6 @@ const valueFormatterForSingleChild = (arg) => {
 
   const {field} = colDef;
   if (childrenAfterGroup && childrenAfterGroup.length === 1 && childrenAfterGroup[0].data) {
-    console.log(arg);
     return childrenAfterGroup[0].data[field];
   }
   return undefined;
@@ -49,11 +48,10 @@ const myRender = ({value, node}) => {
 };
 
 //const zoneKeyCreator = ({value: {trancheStatus}}) => trancheStatus;
-const zoneStateKeyCreator = ({value:{trancheStatus, dealId}}) => `${trancheStatus}-${dealId}`;
+const zoneStateKeyCreator = ({value: {trancheStatus, dealId}}) => `${trancheStatus}-${dealId}`;
 
 const columns = [
   {
-    id: 1,
     //field: 'g1Id',
     field: 'trancheStatus',
     headerName: 'Status',
@@ -64,11 +62,10 @@ const columns = [
     //cellRendererFramework: myRender,
   },
   {
-    id: 2,
     //field: 'g2Id',
     width: 200,
     field: 'dealId',
-    headerName: 'dealName',
+    headerName: 'Deal Name',
     rowGroupIndex: 1,
     //rowGroup: true,
     hide: true,
@@ -79,27 +76,33 @@ const columns = [
     //cellRendererFramework: myRender,
   },
   {
-    id: 3, headerName: 'Tranche', field: 'trancheName',
+    headerName: 'Tranche', field: 'trancheName',
     cellRenderer: 'agAnimateShowChangeCellRenderer',
+    filter: 'agTextColumnFilter'
     //valueFormatter: valueFormatterForSingleChild
   },
   {
-    id: 4, headerName: 'Zip', field: 'zip',
+    headerName: 'Connection', field: 'connection',
+    filter: 'agTextColumnFilter'
     //valueFormatter: valueFormatterForSingleChild
   },
+
   {
-    id: 5, headerName: 'RID', field: 'rid',
-    //valueFormatter: valueFormatterForSingleChild
-  },
-  {
-    id: 6, headerName: 'People', field: 'people',
+    headerName: 'IOI (mm)', field: 'ioi',
     cellRenderer: 'agAnimateShowChangeCellRenderer',
+    filter: 'agNumberColumnFilter',
+    //valueFormatter: valueFormatterForSingleChild
+  },
+  {
+    headerName: 'Order ID', field: 'rid',
     //valueFormatter: valueFormatterForSingleChild
   },
 ];
 
 function getSimpleCellRenderer() {
-  function SimpleCellRenderer() {}
+  function SimpleCellRenderer() {
+  }
+
   SimpleCellRenderer.prototype.init = function (params) {
     const tempDiv = document.createElement('div');
     if (params.node.group) {
@@ -121,6 +124,42 @@ function getSimpleCellRenderer() {
   return SimpleCellRenderer;
 };
 
-export {getSimpleCellRenderer};
+const defaultColDef = {
+  flex: 1,
+  filter: true,
+  sortable: true,
+  resizable: true,
+  width: 170,
+  floatingFilter: true,
+};
 
-export default columns;
+const autoGroupColumnDef = {
+  //filter: true,
+  filter: 'agTextColumnFilter',
+  filterValueGetter: (args) => {
+    const {colDef: {showRowGroup}, node: {level}, data} = args;
+    const fieldMap = {trancheStatus: 'trancheStatus', dealId: 'dealName'};
+    return data[fieldMap[showRowGroup]];
+  },
+  //field: 'trancheStatus',
+  cellRendererParams: {
+    //suppressCount: true,
+    suppressDoubleClickExpand: true,
+    suppressEnterExpand: true
+  }
+
+};
+
+const rowClassRules = {
+  singleTranche: (param) => {
+    const {node: {level, childrenAfterGroup}} = param;
+    if (level === 1) {
+      if (childrenAfterGroup && childrenAfterGroup.length <= 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+};
+
+export {columns as default, getSimpleCellRenderer, defaultColDef, autoGroupColumnDef, rowClassRules};
